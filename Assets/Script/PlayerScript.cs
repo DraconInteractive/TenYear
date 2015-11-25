@@ -2,9 +2,10 @@
 using System.Collections;
 
 public class PlayerScript : MonoBehaviour {
+	public float speed, health, jumpForce;
 	public Rigidbody thisRigidbody;
 	public Transform thisTransform;
-	public float speed, health;
+
 	// Use this for initialization
 	void Start () {
 	
@@ -15,14 +16,24 @@ public class PlayerScript : MonoBehaviour {
 	
 	}
 
-	public void PlayerMovement(){
+	public void PlayerInput(){
+
 		if (Input.GetMouseButtonDown(0)){
 
 		}
 		if (Input.GetMouseButtonDown(1)){
 
 		}
+		thisRigidbody.MovePosition(transform.position + transform.forward * Input.GetAxis("Vertical") * speed * Time.deltaTime);
+		thisRigidbody.MovePosition(transform.position + transform.right * Input.GetAxis("Horizontal") * speed * Time.deltaTime);
 
+		if (Input.GetButtonDown("Jump")){
+			thisRigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+		}
+
+	}
+
+	public void PlayerFire(){
 
 	}
 }
