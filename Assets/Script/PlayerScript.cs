@@ -2,18 +2,22 @@
 using System.Collections;
 
 public class PlayerScript : MonoBehaviour {
-	public float speed, health, jumpForce;
+	public float speed, health, jumpForce, rotateSpeed;
 	public float speedForward, speedStrafe;
 	public Rigidbody thisRigidbody;
 	public Transform thisTransform;
 	public bool showConsole;
+	public bool isThirdPerson;
 
 	// Use this for initialization
 	void Start () {
 		RetrieveReferences();
 		LoadGame ();
 	}
-	
+
+	void FixedUpdate(){
+		PlayerMovement();
+	}
 	// Update is called once per frame
 	void Update () {
 		PlayerInput();
@@ -22,6 +26,14 @@ public class PlayerScript : MonoBehaviour {
 	public void RetrieveReferences(){
 		thisRigidbody = GetComponent<Rigidbody>();
 		thisTransform = GetComponent<Transform>();
+	}
+
+	public void PlayerMovement(){
+		speedForward = Input.GetAxis("Vertical") * speed;
+		speedStrafe = Input.GetAxis("Horizontal") * speed;
+
+		thisRigidbody.velocity = new Vector3(speedStrafe * Time.deltaTime, thisRigidbody.velocity.y, speedForward * Time.deltaTime);
+		transform.Rotate(Vector3.up, Input.GetAxis("Mouse X") * rotateSpeed * Time.deltaTime);
 	}
 
 	public void PlayerInput(){
@@ -34,9 +46,15 @@ public class PlayerScript : MonoBehaviour {
 		}
 
 
+//
+//		if (isThirdPerson){
+//			thisRigidbody.velocity = (Vector3.Cross (Camera.main.transform.right, Vector3.up) * speedForward * Time.deltaTime) + (Camera.main.transform.right * speedStrafe * Time.deltaTime);
+//			transform.rotation = Quaternion.LookRotation(Vector3.Cross (Camera.main.transform.right, Vector3.up), Vector3.up);
+//		} else {
+//
+//		}
 
-		Vector3 _Direction = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-		thisRigidbody.MovePosition (transform.position + _Direction * speed * Time.deltaTime);
+
 
 
 		if (Input.GetButtonDown("Jump")){
@@ -53,6 +71,10 @@ public class PlayerScript : MonoBehaviour {
 
 		if (Input.GetButtonDown ("Save")){
 			SaveGame();
+		}
+
+		if (Input.GetButtonDown ("Change POV")){
+			isThirdPerson = !isThirdPerson;
 		}
 
 	}
